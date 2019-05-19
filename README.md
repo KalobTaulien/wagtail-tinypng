@@ -1,12 +1,12 @@
 # watail-tinypng
-`wagtail-tinypng` optimizes the original uploaded image and removes old renditions so they can be re-created using a smaller file source. 
+`wagtailtinypng` optimizes the original uploaded image and removes old renditions so they can be re-created using a smaller file source. 
 
 **Note:** Currently this only support locally served files.
 
 ![](images/preview.gif)
 
 ## Installation 
-1. `pip install wagtail-tinypng`
+1. `pip install wagtailtinypng`
 2. Add `wagtail_tinypng` to your `INSTALLED_APPS` like so: 
     ```
     INSTALLED_APPS = [
