@@ -1,0 +1,82 @@
+{% extends "wagtailimages/images/edit.html" %}
+{% load wagtail_tinypng wagtailimages_tags wagtailadmin_tags static i18n l10n %}
+
+{% block content %}
+    {{ block.super }}
+
+    {% has_tinypng_key as has_tinypng_key %}
+
+    {% if has_tinypng_key %}
+        <div class="row row-flush nice-padding">
+            {% wagtail_tinypng_image image.id as tinified_image %}
+            
+            <h2>Image minification</h2>
+            <table class="listing">
+                <thead>
+                    <tr>
+                        <th>Image Name</th>
+                        <th>Original Size</th>
+                        <th>Minified Size</th>
+                        <th>Savings</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>{{ image.title }}</td>
+                        <td>
+                            {% if tinified_image.tinified.original_size %}
+                                {{ tinified_image.tinified.original_size|display_size }}
+                            {% else %}
+                                {{ image.file.size|display_size }}
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if tinified_image.tinified.minified_size %}
+                                {{ tinified_image.tinified.minified_size|display_size }}
+                            {% else %}
+                                Image not minified
+                            {% endif %}
+                        </td>            
+                        <td>
+                            {% if tinified_image.tinified.minified_size %}
+                                {{ tinified_image.tinified.savings }}
+                            {% else %}
+                                <em>N/A</em>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <form action="{% url 'tinify_form' image.id %}" id="js-minify-image" method="POST">
+                                {% csrf_token %}
+                                {% if tinified_image.tinified.minified_size %}
+                                    <button type="submit" class="button">Re-compress Image</button>
+                                {% else %}
+                                    <button type="submit" class="button">Minify Now</button>
+                                {% endif %}
+                            </form>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    {% else %}
+        <div class="row row-flush nice-padding">
+            <div class="help-block help-critical">
+            TinyPNG is installed but no API was found.
+            </div>
+        </div>
+    {% endif %}
+{% endblock %}
+
+{% block extra_js %}
+    {{ block.super }}
+
+    <script>
+        // Provide a spinning icon and disable the button to prevent double clicks
+        $(document)
+        .on("submit", "#js-minify-image", function(e) {
+            var $button = $("button[type='submit']", this)
+            $button.html("<div class='icon icon-spinner'></div>").prop("disabled", true)
+        })
+    </script>
+{% endblock extra_js %}
