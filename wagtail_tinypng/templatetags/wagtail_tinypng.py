@@ -19,15 +19,15 @@ def wagtail_tinypng_image(image_id):
     except Image.DoesNotExist:
         # Image does not exist
         return {}
-    except Exception: 
-        # A catch-all exception 
+    except Exception:
+        # A catch-all exception
         return {}
 
     tinified_image, created = WagtailTinyPNGImage.objects.get_or_create(wagtail_image=image)
 
     # Check if the original image size matches the comrpessed size (if compressed)
-    # If the image is not compressed, do nothing. 
-    # If the image IS compressed and the minified_size doesn't match the original image file_size, 
+    # If the image is not compressed, do nothing.
+    # If the image IS compressed and the minified_size doesn't match the original image file_size,
     # then reset the fields on `tinifed_image`
     wagtail_image = tinified_image.wagtail_image
     if tinified_image.is_minified and tinified_image.minified_size != wagtail_image.file_size:
@@ -39,6 +39,7 @@ def wagtail_tinypng_image(image_id):
     return {
         'tinified': tinified_image,
     }
+
 
 @register.filter
 def display_size(value):
