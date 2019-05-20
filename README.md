@@ -1,5 +1,7 @@
-# watail-tinypng
+# watailtinypng
 `wagtailtinypng` optimizes the original uploaded image and removes old renditions so they can be re-created using a smaller file source. 
+
+> .jpeg, .jpg and .png images are supported
 
 **Note:** Currently this only support locally served files.
 
