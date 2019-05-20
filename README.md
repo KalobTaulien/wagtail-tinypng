@@ -17,6 +17,7 @@
     ]
     ```
 3. Add your `TINIFY_API_KEY` to your `base.py` file (or add `TINIFY_API_KEY = "{your_key_here}"` to `dev.py` or `production.py` to separate environments). If you need an API key, head on over to [https://tinypng.com/developers](https://tinypng.com/developers) to get your free API key.
+4. **For existing websites only**: You'll want to run a management command to sync your existing images with this package. For that, run `./manage.py sync_tinypng_images`. You will see how many new table relationships were created vs. existing. This command is safe to run on new installations _and_ you can run this command multiple times, no harm done.
 
 ## Enable the list view 
 This package comes with a simple List View of all your images. To enable it, make sure you have `wagtail.contrib.modeladmin` in your `INSTALLED_APPS` like so:
