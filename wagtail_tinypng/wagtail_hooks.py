@@ -4,6 +4,7 @@ from django.utils.translation import ugettext as _
 from wagtail.contrib.modeladmin.helpers import ButtonHelper
 from wagtail.contrib.modeladmin.options import ModelAdmin, modeladmin_register
 from wagtail.core import hooks
+from wagtail.images import get_image_model
 
 from .models import WagtailTinyPNGImage
 from .views import TinifyPNG
@@ -15,6 +16,7 @@ def urlconf_time():
     return [path("tinify/<int:pk>/", TinifyPNG.as_view(), name="tinify_form")]
     
 if 'wagtail.contrib.modeladmin' in settings.INSTALLED_APPS:
+
     class WagtailTinypngButtonHelper(ButtonHelper):
         def add_button(self, classnames_add=None, classnames_exclude=None):
             if classnames_add is None:
