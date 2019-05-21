@@ -4,12 +4,12 @@ from setuptools import find_packages, setup
 
 setup(
     name='wagtailtinypng',
-    version='0.0.1',
+    version='0.0.2',
     packages=find_packages(),
     include_package_data=True,
     license='MIT',
-    description='Allow image compression through the Wagtail admin using tinypng.com.',
-    long_description='For installation instructions see https://github.com/KalobTaulien/wagtail-tinypng',
+    description='Allow lossless .jpeg, .jpg, and .png compression through the Wagtail admin interface using tinypng.com.',
+    long_description='For installation and settings see https://github.com/KalobTaulien/wagtail-tinypng',
     url='https://github.com/KalobTaulien/wagtail-tinypng',
     author='Kalob Taulien',
     author_email='kalob@kalob.io',
