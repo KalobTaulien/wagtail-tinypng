@@ -29,4 +29,17 @@ INSTALLED_APPS = [
 ]
 ```
 
+## Settings 
+You can add a maximum image width or height when compressing an image. Let's say you've uploaded a large 5000px * 5000px image, you can set a `TINIFY_MAX_WIDTH` or `TINIFY_MAX_HEIGHT`. If neither setting is set, no image resizing will happen.
+
+```
+TINIFY_MAX_WIDTH = 2000
+# Or
+TINIFY_MAX_HEIGHT = 1000
+```
+
+If you set both, the `TINIFY_MAX_WIDTH` will take precedence. 
+
+**Note**: You images will be cropped to fit the width and height. This will attempt to keep the same aspect ratio, and simply shrink the images dimensions to the maximum width or height. 
+ 
 ![](images/list-view.gif)

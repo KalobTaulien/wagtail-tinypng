@@ -1,3 +1,4 @@
+""""wagtailtinypng views."""
 from django.conf import settings
 from django.contrib import messages
 from django.shortcuts import redirect
@@ -11,9 +12,12 @@ from .models import WagtailTinyPNGImage
 
 
 class TinifyPNG(TemplateView):
+    """Basic Template View for handling a POST and GET request."""
+
     http_method_names = ["get", "post"]
 
     def post(self, request, *args, **kwargs):
+        """When POSTing an image minification request."""
         tinify.key = settings.TINIFY_API_KEY
         image_id = kwargs["pk"]
         image, created = WagtailTinyPNGImage.objects.get_or_create(
@@ -27,10 +31,38 @@ class TinifyPNG(TemplateView):
             image.original_size = original_image.file.size
             # Use the image source
             source = tinify.from_file(original_image.file.path)
-            # Resize the image to a max width of 2000px
-            resized = source.resize(method="scale", width=2000)
-            # Write file to local system
-            resized.to_file(original_image.file.path)
+            # If resizing to a maximum width or height.
+            # This is very "not clever" code, just to keep this nice and simple.
+            resize_width = None
+            resize_height = None
+            if getattr(settings, 'TINIFY_MAX_WIDTH', None):
+                try:
+                    resize_width = int(settings.TINIFY_MAX_WIDTH)
+                except ValueError:
+                    # Could not set a width
+                    pass
+
+                if resize_width:
+                    # Resize the image to a max width of `resize_width` in pixels. ie. 2000px.
+                    resized = source.resize(method="scale", width=resize_width)
+                    # Write file to local system
+                    resized.to_file(original_image.file.path)
+            elif getattr(settings, 'TINIFY_MAX_HEIGHT', None):
+                try:
+                    resize_height = int(settings.TINIFY_MAX_HEIGHT)
+                except ValueError:
+                    # Could not set a height
+                    pass
+
+                if resize_height:
+                    # Resize the image to a max height of `resize_height` in pixels. ie. 2000px.
+                    resized = source.resize(method="scale", height=resize_height)
+                    # Write file to local system
+                    resized.to_file(original_image.file.path)
+            else:
+                # There was no max width or height set. Compress as normal.
+                source.to_file(original_image.file.path)
+
             # Update WagtailTinyPNGImage.minified_size
             # Update Image.minified_size
             image.minified_size = original_image.file.size
