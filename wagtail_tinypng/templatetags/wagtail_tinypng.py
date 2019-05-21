@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+import os
+
 from django import template
 from django.conf import settings
 from wagtail.images import get_image_model
@@ -45,6 +47,15 @@ def wagtail_tinypng_image(image_id):
 def display_size(value):
     """A simple template filter to turn bytes into B, KB, MB, GB, TB, etc."""
     return display_size_function(value)
+
+
+@register.filter
+def allowable_image_type(image_object):
+    """Check if an image object has a .jpeg, .jpg or .png extension."""
+    filename, file_extension = os.path.splitext(image_object.filename)
+    if file_extension.lower() in ['.jpeg', '.jpg', '.png']:
+        return True
+    return False
 
 
 @register.simple_tag(takes_context=False, name='has_tinypng_key')

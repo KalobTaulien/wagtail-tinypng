@@ -9,6 +9,7 @@ from django.views.generic import TemplateView
 import tinify
 
 from .models import WagtailTinyPNGImage
+from .templatetags.wagtail_tinypng import allowable_image_type
 
 
 class TinifyPNG(TemplateView):
@@ -20,10 +21,20 @@ class TinifyPNG(TemplateView):
         """When POSTing an image minification request."""
         tinify.key = settings.TINIFY_API_KEY
         image_id = kwargs["pk"]
+        image_url = reverse("wagtailimages:edit", args=(image_id,))
         image, created = WagtailTinyPNGImage.objects.get_or_create(
             wagtail_image_id=image_id
         )
         original_image = image.wagtail_image
+
+        # If the image is not a .jpeg, .jpg or .png provide the user with a better error message
+        if not allowable_image_type(original_image):
+            messages.error(
+                request,
+                "Image format not supported. Only .jpeg, .jpg and .png images can be losslessly compressed.",
+            )
+            return redirect(image_url)
+
         # Don't check if the image is minified already.
         # A user MIGHT want to re-comrpess an image, and that's up to them
         try:
@@ -35,7 +46,7 @@ class TinifyPNG(TemplateView):
             # This is very "not clever" code, just to keep this nice and simple.
             resize_width = None
             resize_height = None
-            if getattr(settings, 'TINIFY_MAX_WIDTH', None):
+            if getattr(settings, "TINIFY_MAX_WIDTH", None):
                 try:
                     resize_width = int(settings.TINIFY_MAX_WIDTH)
                 except ValueError:
@@ -47,7 +58,7 @@ class TinifyPNG(TemplateView):
                     resized = source.resize(method="scale", width=resize_width)
                     # Write file to local system
                     resized.to_file(original_image.file.path)
-            elif getattr(settings, 'TINIFY_MAX_HEIGHT', None):
+            elif getattr(settings, "TINIFY_MAX_HEIGHT", None):
                 try:
                     resize_height = int(settings.TINIFY_MAX_HEIGHT)
                 except ValueError:
@@ -111,7 +122,6 @@ class TinifyPNG(TemplateView):
                 print(exception_type)
             messages.error(request, "Compression error. {}".format(e.message))
 
-        image_url = reverse("wagtailimages:edit", args=(image_id,))
         return redirect(image_url)
 
     def get(self, request, *args, **kwargs):

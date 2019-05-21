@@ -6,7 +6,7 @@
 
     {% has_tinypng_key as has_tinypng_key %}
 
-    {% if has_tinypng_key %}
+    {% if has_tinypng_key and image|allowable_image_type %}
         <div class="row row-flush nice-padding">
             <div class="col12">
                 {% wagtail_tinypng_image image.id as tinified_image %}
@@ -60,10 +60,20 @@
                     </tbody>
                 </table>
             </div>
+        {% elif not image|allowable_image_type %}
+            <div class="row row-flush nice-padding">
+                <div class="col12">
+                    <div class="help-block help-critical">
+                    This image format cannot be minified. Supported formats are .jpeg, .jpg and .png
+                    </div>
+                </div>
+            </div>
         {% else %}
             <div class="row row-flush nice-padding">
-                <div class="help-block help-critical">
-                TinyPNG is installed but no API was found.
+                <div class="col12">
+                    <div class="help-block help-critical">
+                    TinyPNG is installed but no API key was found.
+                    </div>
                 </div>
             </div>
         {% endif %}
