@@ -1,5 +1,6 @@
 include LICENSE *.RST *.txt *MD
 recursive-include wagtail_tinypng/templates *
 recursive-include wagtail_tinypng/templatetags *
+recursive-include wagtail_tinypng/management *
 global-exclude __pycache__
 global-exclude *.py[co]
