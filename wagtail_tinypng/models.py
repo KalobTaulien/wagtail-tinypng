@@ -24,33 +24,35 @@ class WagtailTinyPNGImage(models.Model):
     )
 
     def __str__(self):
+        """String name of this model instance."""
         return self.wagtail_image.title
 
     @property
     def is_minified(self):
-        """If there is a minified size, assume the image has been minified. 
+        """If there is a minified size, assume the image has been minified.
 
         No need for additional database column.
         """
         if self.minified_size:
-            return True 
+            return True
         return False
 
     @property
     def savings(self):
+        """How much was saved."""
         if self.original_size:
             percent = 100 - round(self.minified_size / self.original_size * 100)
             bytes_saved = display_size(self.original_size - self.minified_size)
-            return f"{percent}% ({bytes_saved} saved)"
+            return "{}% ({} saved)".format(percent, bytes_saved)
         return "-"
-    
+
     @property
     def display_original_size(self):
         """Display the images' original size."""
         if not self.original_size:
-            size = self.wagtail_image.file_size 
+            size = self.wagtail_image.file_size
         else:
-            size = self.original_size 
+            size = self.original_size
         return display_size(size)
 
     @property
@@ -60,6 +62,6 @@ class WagtailTinyPNGImage(models.Model):
             return "-"
         return display_size(self.minified_size)
 
-    class Meta:
+    class Meta:  # noqa
         verbose_name = "Compressed Image"
         verbose_name_plural = "Compressed Images"
