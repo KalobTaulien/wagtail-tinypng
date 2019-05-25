@@ -9,11 +9,12 @@
 
 ## Installation 
 1. `pip install wagtailtinypng`
-2. Add `wagtail_tinypng` to your `INSTALLED_APPS` like so: 
+2. Add `wagtail_tinypng` to your `INSTALLED_APPS`. It _must_ go above `wagtail.images` like so: 
     ```
     INSTALLED_APPS = [
         ...
         'wagtail_tinypng',
+        'wagtail.images',
     ]
     ```
 3. Add your `TINIFY_API_KEY` to your `base.py` file (or add `TINIFY_API_KEY = "{your_key_here}"` to `dev.py` or `production.py` to separate environments). If you need an API key, head on over to [https://tinypng.com/developers](https://tinypng.com/developers) to get your free API key.
